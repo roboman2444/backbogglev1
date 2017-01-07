@@ -1,0 +1,17 @@
+//qu is just q in here
+"titdys",
+"tteryl",
+"diexlr",
+"vtehrw",
+"nhgwee",
+"cahsop",
+"bbooaj",
+"fapfks",
+"ootawt",
+"neeius",
+"qunihm",
+"ioesst",
+"angeea",
+"revldy",
+"nzlhrn",
+"cutmoi"
