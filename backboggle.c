@@ -84,6 +84,31 @@ wordtrie_t root = {0};
 
 int curfind = 0;
 int numfound = 0;
+int scorefound = 0;
+int longestfound = 0;
+
+
+int calcscore(int wordlen){
+	switch(wordlen){
+		case 0:
+		case 1:
+		case 2:
+			return 0;
+		case 3:
+		case 4:
+			return 1;
+		case 5:
+			return 2;
+		case 6:
+			return 3;
+		case 7:
+			return 5;
+		default:
+			return 11;
+	}
+	return 11;	//8 and up
+}
+
 /*
 int resettrie(wordtrie_t * cur){
 	int cnt = 0;
@@ -143,6 +168,8 @@ int search(int x, int y, wordtrie_t *cur){
 		if(next->lastfound != curfind){
 			next->lastfound = curfind;
 			numfound++;
+			scorefound+=calcscore(jdepth);
+			if(jdepth>longestfound) longestfound=jdepth;
 		}
 	}
 	if(y > 0){
@@ -233,8 +260,15 @@ clock_gettime(CLOCK_MONOTONIC, &tstart);
 
 
 int mxwords = 0;
+int mxscore = 0;
+int mxlen = 0;
 int cnt;
 for(cnt = 0;TRUE; cnt++){
+	int printmax = 0;
+	numfound = 0;
+	scorefound = 0;
+	longestfound = 0;
+
 	curfind = cnt+1;
 	genrandomboard();
 	int x, y;
@@ -242,12 +276,26 @@ for(cnt = 0;TRUE; cnt++){
 	for(y = 0; y < BOARDY; y++)
 		search(x, y, &root);
 //	int result = resettrie(&root);
-	int result = numfound;
-	numfound = 0;
-	if(result > mxwords){
-		mxwords = result;
-		printf("after %i tries found %i words out of %i (~%.4f\%)\n", cnt, result, numwords, 100.0* ((double)result)/((double)numwords));
+	if(numfound > mxwords){
+		mxwords = numfound;
+		printf("after %i tries found %i words out of %i (~%.4f\%)\n", cnt, numfound, numwords, 100.0* ((double)numfound)/((double)numwords));
 		printboard();
+		printmax = 1;
+	}
+	if(scorefound > mxscore){
+		mxscore = scorefound;
+		printf("after %i tries found %i score\n", cnt, scorefound);
+		printboard();
+		printmax = 1;
+	}
+	if(longestfound > mxlen){
+		mxlen = longestfound;
+		printf("after %i tries found %i len\n", cnt, longestfound);
+		printboard();
+		printmax = 1;
+	}
+	if(printmax){
+		printf("after %i tries found %i words, %i score, %i len\n", cnt, mxwords, mxscore, mxlen);
 	}
 	if(!(cnt %100000)){
 		clock_gettime(CLOCK_MONOTONIC, &tend);
